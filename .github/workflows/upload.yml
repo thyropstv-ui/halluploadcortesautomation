@@ -1,0 +1,23 @@
+name: Upload Drive -> YouTube
+
+on:
+  schedule:
+    - cron: "0 */3 * * *"   # a cada 3 horas (horário UTC). Ajuste como quiser.
+  workflow_dispatch:
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install google-api-python-client google-auth-oauthlib
+      - run: python drive_to_youtube.py
+        env:
+          GOOGLE_TOKEN_JSON: ${{ secrets.GOOGLE_TOKEN_JSON }}
+          FOLDER_ID: ${{ secrets.FOLDER_ID }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+          SHEET_TAB: Videos
+          TIMEZONE: America/Sao_Paulo
